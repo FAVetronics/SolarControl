@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "Blink",
+			"path": ".."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"random": "cpp"
+		}
+	}
+}
