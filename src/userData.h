@@ -2,8 +2,8 @@
 #define __COMPILE_USERDATA_H__
 
 
-#define NO_INVERTER 1
-//#undef NO_INVERTER
+//#define NO_INVERTER 1
+#undef NO_INVERTER
 
 #define METHOD_GET  1 // Shelly Plus 1
 #define METHOD_POST 0 // Shelly Plug S

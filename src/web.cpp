@@ -58,10 +58,11 @@ void web_init() {
   }
   // Configure static IP address end
   WiFi.begin(ssid, password);
-  Serial.println("\nConnecting");
+  Serial.print("\nConnecting wifi");
   while(WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
+    digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN)); // Built-in Led toggle
   }
   Serial.println("");
   Serial.print("Connected to WiFi network with IP Address: ");

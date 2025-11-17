@@ -24,6 +24,9 @@ CRGB leds[NUM_LEDS];
 
 // Returnér fysisk pixelnummer ud fra logiske (x(coloumn), y(Row))
 int xyToIndex(int x, int y) {
+#if defined(ESP32)
+  return y;
+#endif
 #ifdef StartLowerLeftCorner
   // startende i nederste venstre hjørne
   // y=0 er nederst
@@ -61,6 +64,7 @@ unsigned long lastLEDUpdateTime = UPDATE_LED_INTERVAL_ms;
 
 
 void LED_coloumn(int iCol, int iVal, int iMax, struct CRGB sColor) {
+  assert(iMax);
   long NoLEDOn = (iVal*LEDs_PER_COLOUMN) / iMax;
   for (int n = 0; n < LEDs_PER_COLOUMN; n++) {
     if (n < NoLEDOn) {
@@ -79,6 +83,7 @@ void LED_Stacked3p1(int iCol, int iValBot, int iValMid, int iValTop, float fValP
   int iAvailableLEDs = LEDs_PER_COLOUMN;
   if (sTopLEDColor != CRGB::Black) iAvailableLEDs -= 1;
   int iMax = (int)(fValPerLED * iAvailableLEDs);
+  assert(iMax);
   int iNoOfBotLEDOn = (long)(iValBot * iAvailableLEDs) / iMax;
   int iNoOfMidLEDOn = (long)(iValMid * iAvailableLEDs) / iMax + iNoOfBotLEDOn;
   int iNoOfTopLEDOn = (long)(iValTop * iAvailableLEDs) / iMax + iNoOfMidLEDOn;
@@ -113,6 +118,7 @@ void LED_init(void){
   {
     FastLED.setBrightness(3);
   }
+  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 
@@ -191,6 +197,7 @@ void ShowElectricityCost(int iCol) {
   int iMaxPriceToday_Ore = (int)(get_fElectricityPriceMax_kr() * 100);
   int iMinPriceToday_Ore = (int)(get_fElectricityPriceMin_kr() * 100);
   int iFullScale_Ore = iMaxPriceToday_Ore - iMinPriceToday_Ore;
+  if (iFullScale_Ore == 0) iFullScale_Ore = 10000;
   float fValPerLED_Ore = (float)iFullScale_Ore / LEDs_PER_COLOUMN;
   int iPriceNow_Ore = (int)(get_fElectricityPrice_kr(0) * 100) - iMinPriceToday_Ore;
   int iPriceNextHour_Ore = (int)(get_fElectricityPrice_kr(1) * 100) - iMinPriceToday_Ore;

@@ -118,7 +118,7 @@ void checkDefrosting(void){
   float tDry = get_fDMI_temp(PAR_TEMP_DRY);
   Serial.printf("tDry: %f\n", tDry);
   uint8_t ucDefrostRelayState;
-  bool bActivateHeat = ((tDry < 1.5) && (tDry > -0.5));
+  bool bActivateHeat = ((tDry < 2) && (tDry > -2));
   if (bActivateHeat) ucDefrostRelayState = DEFROST_RELAY_STATE_ACTIVE;
   else ucDefrostRelayState = DEFROST_RELAY_STATE_INACTIVE;
   web_SetDefrostRelay(ucDefrostRelayState == DEFROST_RELAY_STATE_ACTIVE);
@@ -494,9 +494,10 @@ Hvis det ikke er nok, itererer vi over de timer med lavest pris, indtil vi har n
 
 void setup() {
   Serial.begin(115200); 
-  while (!Serial) {
-    ;  // wait for serial port to connect. Needed for native USB port only
-  }
+// With waiting for Serial, the program won't start until the terminal program has started  
+//  while (!Serial) {
+//    ;  // wait for serial port to connect. Needed for native USB port only
+//  }
 
   LED_init();
   web_init();
