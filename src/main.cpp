@@ -142,7 +142,7 @@ void checkDefrosting(void){
   float tDry = get_fDMI_temp(PAR_TEMP_DRY);
   Serial.printf("tDry: %f\n", tDry);
   uint8_t ucDefrostRelayState;
-  bool bActivateHeat = ((tDry < 2) && (tDry > -2));
+  bool bActivateHeat = ((tDry < 3));
   if (bActivateHeat) ucDefrostRelayState = DEFROST_RELAY_STATE_ACTIVE;
   else ucDefrostRelayState = DEFROST_RELAY_STATE_INACTIVE;
   web_SetDefrostRelay(ucDefrostRelayState == DEFROST_RELAY_STATE_ACTIVE);

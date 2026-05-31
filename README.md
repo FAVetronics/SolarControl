@@ -22,7 +22,7 @@ Suppresses PV export when the spot payout (after feed-in tariffs) is negative or
 
 ### Defrost control
 
-Fetches `temp_dry` from DMI station 06068 every 15 minutes. Activates a Shelly relay (heating element) when the temperature is between −2 °C and +2 °C to prevent condensate from freezing on the heat pump.
+Fetches `temp_dry` from DMI station 06068 every 15 minutes. Activates a Shelly relay (heating element) when the temperature is less than +3 °C to prevent condensate from freezing on the heat pump.
 
 ## Hardware
 
