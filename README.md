@@ -87,7 +87,7 @@ Built with [PlatformIO](https://platformio.org/). Key library dependencies:
 
 ## Notes
 
-- Daylight saving time is not adjusted automatically (`DAYLIGHT_SAVING` define in `main.cpp`).
+- Daylight saving time is adjusted automatically using EU rules (clocks forward last Sunday of March at 02:00 CET, back last Sunday of October at 03:00 CEST). The offset is re-evaluated every hour and on startup.
 - Grid-charge-for-arbitrage logic exists in `main.cpp` but is wrapped in `#ifdef OLD_STUF` and not currently active.
 - The `elprisenligenu` price source path has a hardcoded date in the URL and is not production-ready.
 - The SSL certificate pinned in `UpdateNordPoolPrices` expires **March 12, 2027**.

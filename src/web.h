@@ -4,10 +4,9 @@
 #include <ArduinoJson.h>
 
 
-const String HOST_NAME = "dmigw.govcloud.dk";
+const String HOST_NAME = "opendataapi.dmi.dk";
 const int HTTP_PORT = 80;
 const String PATH_NAME = "/v2/metObs/collections/observation/items";
-const String API_KEY = "8713b8fa-fe04-450c-ad06-2d32ebbf821c";
 const String queryString = "?period=latest&stationId=06068&parameterId=";
 const String PAR_TEMP_DRY = "temp_dry"; 
 const String PAR_TEMP_DEW = "temp_dew"; 

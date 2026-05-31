@@ -374,8 +374,8 @@ bool fetchPreviousSolarActual(int* pSolarLastHour_W_m2)
 {
   HTTPClient http;
   snprintf(metobs_url, sizeof(metobs_url),
-  "https://dmigw.govcloud.dk/v2/metObs/collections/observation/items?period=latest&stationId=06068&parameterId=radia_glob&api-key=40688928-55b1-462b-856d-a92bda386bb0");
-// to get average for the last hour:  "https://dmigw.govcloud.dk/v2/metObs/collections/observation/items?period=latest&stationId=06068&parameterId=radia_glob_last1h&api-key=40688928-55b1-462b-856d-a92bda386bb0");
+  "https://opendataapi.dmi.dk/v2/metObs/collections/observation/items?period=latest&stationId=06068&parameterId=radia_glob");
+// to get average for the last hour:  "https://opendataapi.dmi.dk/v2/metObs/collections/observation/items?period=latest&stationId=06068&parameterId=radia_glob_last1h"
   //Serial.println("constructed URL:");
 //  Serial.println(metobs_url);
   http.setTimeout(15000);  //API is sometimes a little bit slow.
@@ -441,7 +441,6 @@ float get_fDMI_temp(String sParameter)
     http.useHTTP10(true);
     http.begin(client, url);
 //    http.begin(url.c_str());
-    http.addHeader("X-Gravitee-Api-Key", API_KEY);
 //    http.useHTTP10(true);
     int httpCode = http.GET();
     if (httpCode <= 0)

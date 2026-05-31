@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\niels\\\\VSC\\\\SolarControl\" -Recurse -Include \"*.cpp\", \"*.h\", \"*.c\" -Exclude \".pio*\")",
+      "Bash(Select-Object -ExpandProperty FullName)"
+    ]
+  }
+}

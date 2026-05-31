@@ -11,10 +11,7 @@
 
 /******* Defines *******/
 
-#define DAYLIGHT_SAVING 0                                                                           // kunne det ikke automatiseres?
 #define GMT_PLUS_1      3600
-#define TIME_OFFSET_GMT             GMT_PLUS_1
-#define TIME_OFFSET_DAYLIGHT_SAVING (3600*DAYLIGHT_SAVING)
 
 
 #if use_billigkwh
@@ -62,10 +59,37 @@ int iActualHourlyChargeRate_Wh_x100[24];
 
 
 /*** time/date ***/
-const long myUTCTimeOffset = TIME_OFFSET_DAYLIGHT_SAVING;
 WiFiUDP myNTPUDP;
 const char* myNTPServer = "europe.pool.ntp.org";
 //const char* myNTPServer = "time.google.com";
+
+// Returns the day-of-month of the last Sunday in the given month/year
+static int lastSundayOfMonth(int year, int month) {
+    struct tm t = {};
+    t.tm_year = year - 1900;
+    t.tm_mon  = month; // day 0 of next month = last day of current month
+    t.tm_mday = 0;
+    mktime(&t);
+    return t.tm_mday - t.tm_wday; // subtract weekday offset (0=Sun)
+}
+
+// EU DST: CEST active from last Sunday of March 01:00 UTC to last Sunday of October 01:00 UTC
+static bool isCEST(time_t utcEpoch) {
+    struct tm *t = gmtime(&utcEpoch);
+    int month = t->tm_mon + 1;
+    int day   = t->tm_mday;
+    int hour  = t->tm_hour;
+    int year  = t->tm_year + 1900;
+
+    if (month < 3 || month > 10) return false;
+    if (month > 3 && month < 10) return true;
+
+    int lastSun = lastSundayOfMonth(year, month);
+    if (month == 3)  return (day > lastSun) || (day == lastSun && hour >= 1);
+    /* month == 10 */ return (day < lastSun) || (day == lastSun && hour < 1);
+}
+
+long myTimeOffset = GMT_PLUS_1; // updated at runtime to GMT+1 (CET) or GMT+2 (CEST)
 
 /**
  * Adding support to year, month, day from NTPClient
@@ -101,7 +125,7 @@ public:
         return day;
     }
 };
-ExtendedNTPClient timeDateClient(myNTPUDP, myNTPServer, myUTCTimeOffset+3600);
+ExtendedNTPClient timeDateClient(myNTPUDP, myNTPServer, myTimeOffset);
 
 
 
@@ -505,8 +529,9 @@ void setup() {
   // alive blink
   pinMode(LED_BUILTIN, OUTPUT);
   timeDateClient.begin();
- // timeDateClient.setTimeOffset((int)TIME_OFFSET_GMT + (int)TIME_OFFSET_DAYLIGHT_SAVING);
   timeDateClient.update();
+  myTimeOffset = isCEST(timeDateClient.getEpochTime() - myTimeOffset) ? 7200 : 3600;
+  timeDateClient.setTimeOffset(myTimeOffset);
   // init history
   NVS.begin();
   String sNVSkey;
@@ -607,6 +632,12 @@ void loop() {
   if (ucCurrentHour != ucPrevHour) {
     ucPrevHour = ucCurrentHour;
     timeDateClient.update();
+    long newOffset = isCEST(timeDateClient.getEpochTime() - myTimeOffset) ? 7200 : 3600;
+    if (newOffset != myTimeOffset) {
+      myTimeOffset = newOffset;
+      timeDateClient.setTimeOffset(myTimeOffset);
+      timeDateClient.update();
+    }
     Serial.println("\n\n----------------------------------------------------------------------------");
     Serial.println("Day: " + String(timeDateClient.getDay())  + " time: " + timeDateClient.getFormattedTime());
 
