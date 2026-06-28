@@ -275,18 +275,18 @@ KPpdzvvtTnOPlC7SQZSYmdunr3Bf9b77AiC/ZidstK36dRILKz7OA54=\n\
 -----END CERTIFICATE-----\n";
     client.setCACert(root_ca);
     client.setInsecure(); // midlertidigt
-  
+
     Serial.println("\nConnecting...");
     if (!client.connect(host, httpsPort)) {
       Serial.println("Connection failed");
       return;
     }
-  
+
     client.print(String("GET ") + url + " HTTP/1.1\r\n" +
                 "Host: " + host + "\r\n" +
                 "User-Agent: ESP32\r\n" +
                 "Connection: close\r\n\r\n");
-  
+
     while (client.connected()) {
     if (client.available())
     {
@@ -435,13 +435,12 @@ float get_fDMI_temp(String sParameter)
 {
   if (WiFi.status()== WL_CONNECTED) {
     //Serial.print("Fetching data from DMI: ");
-    String url = "http://" + HOST_NAME + PATH_NAME + queryString + sParameter;
-    WiFiClient client;
+    String url = "https://" + HOST_NAME + PATH_NAME + queryString + sParameter;
+    WiFiClientSecure client;
+    client.setInsecure(); // DMI open data - no cert verification needed
     HTTPClient http;
     http.useHTTP10(true);
     http.begin(client, url);
-//    http.begin(url.c_str());
-//    http.useHTTP10(true);
     int httpCode = http.GET();
     if (httpCode <= 0)
     {

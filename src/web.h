@@ -5,7 +5,7 @@
 
 
 const String HOST_NAME = "opendataapi.dmi.dk";
-const int HTTP_PORT = 80;
+const int HTTP_PORT = 443;
 const String PATH_NAME = "/v2/metObs/collections/observation/items";
 const String queryString = "?period=latest&stationId=06068&parameterId=";
 const String PAR_TEMP_DRY = "temp_dry"; 
